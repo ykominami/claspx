@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Type $3 to confirm deletion:"
+read name
+echo "Deleted repository $name"
