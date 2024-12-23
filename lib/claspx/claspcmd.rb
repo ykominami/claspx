@@ -12,7 +12,11 @@ module Claspx
 
     def push(chdir)
       cmdline = "#{@name} push"
-      # p cmdline
+      execute(cmdline, chdir)
+    end
+
+    def clone(chdir)
+      cmdline = "#{@name} clone"
       execute(cmdline, chdir)
     end
   end

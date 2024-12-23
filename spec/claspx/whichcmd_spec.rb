@@ -17,7 +17,6 @@ RSpec.describe Claspx::WhichCmd do
     project = @app.project_group.get_local_project(@local_project_name)
     cmd = Claspx::WhichCmd.new
     result = cmd.which("npx")
-    p result
     expect(result.status).to eq(true)
   end
 end

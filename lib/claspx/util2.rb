@@ -5,34 +5,34 @@ module Claspx
     @output_fname = "b.txt"
 
     class << self
-      def cmdx()
-        o, e, s = Open3.capture3("echo 'a'; sort >&2", :stdin_data=>"foo\nbar\nbaz\n")
-      end
-
-      def cmd(cmdline, dir=nil)
-        if dir.nil?
-          o, e, s = Open3.capture3(cmdline)
+      def count_error_all(label, enum, &block)
+        all_counter = 0
+        error_counter = 0
+        return_array = []
+        if enum.instance_of?(Hash)
+          enum.each { |k,v|
+            all_counter += 1
+            result = block.call(k, v)
+            #  v.reform_to_camelcase_js_script()
+            error_counter += 1 if result.error?
+            return_array << result
+          }
+        elsif enum.instance_of?(Array)
+          enum.each { |item|
+            all_counter += 1
+            result = block.call(item)
+            #  v.reform_to_camelcase_js_script()
+            error_counter += 1 if result.error?
+            return_array << result
+          }
         else
-          o, e, s = Open3.capture3(cmdline, chdir: dir)
+          raise
         end
-        Result.new(s.success?, o)
-      end
-
-      def get_max(array)
-        array.max
-      end
-
-      def repo_list()
-        content = File.readlines(@output_fname)
-        arr = content.each_with_object([]){ |it, list| 
-          array = it.split("\t")
-          Loggerx.debug "array.size=#{array.size}"
-          ret = array[0].strip.size
-          Loggerxcm.debug "ret=#{ret}"
-          if array.size > 0
-            list << array
-          end
-        }
+        status = true
+        status = false if error_counter > 0
+        # result = Result.new(status, "Project#reform_to_camelcase_js_script_all")
+        result = Result.new(status, label)
+        result.add_return_array(return_array)  
       end
     end
   end

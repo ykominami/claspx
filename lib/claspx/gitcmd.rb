@@ -2,49 +2,42 @@ require "git"
 
 module Claspx
   class GitCmd < Cmd
-    @logger = nil
-
-    def self.open_git_repo(working_dir)
-      g = nil
-      begin
-        if @logger.nil?
-          @logger = Loggerx.loggerx      
-        end
-        g = Git.open(working_dir, log: @logger)
-      rescue ArgumentError => e
-        @logger.fatal( "An error occurred: #{e.message}" )
-      end
-      g
-    end
-    
-    def initialize(repo_dir, logger = nil)
+    def initialize(working_dir, logger = nil)
       @logger = logger
-      @logger = Loggerx.loggerx unless @logger
+      @logger ||= Loggerx.loggerx
       @g = nil
-      @repo_dir = nil
-      open_repo_dir(repo_dir)
+      @working_dir_pn = nil
+      @repo_dir_pn = nil
+      open_working_dir(working_dir)
+      super("git")
     end
 
-    def open_repo_dir(repo_dir)
-      begin
-        @g = Git.open(repo_dir, log: @logger)
-      rescue ArgumentError => e
-        @logger.fatal( "An error occurred: #{e.message}" )
-      end
-      if !@g.nil?
-        @repo_dir = repo_dir        
-      end
+    def open_working_dir(working_dir)
+      @logger = Loggerx.loggerx if @logger.nil?
+      @working_dir_pn = Pathname.new(working_dir)
+      # GIT_EXT という名前のディレクトリをリポジトリとみなす
+      @repo_dir_pn = @working_dir_pn.join(GIT_EXT)
+      @g = if @repo_dir_pn.exist?
+             # リポジトリがワーキングディレクトリの直下に存在すると指定する
+             Git.open(@working_dir_pn.to_s, { repository: @repo_dir_pn, log: @logger })
+           else
+             # ワーキングディレクトリの直下にリポジトリを作成する（デフォルト）
+             Git.init(@repo_dir_pn.to_s)
+           end
+    rescue ArgumentError => e
+      @logger.fatal("An error occurred: #{e.message}")
     end
 
     def valid_repo?
       !@g.nil? && !@repo_dir.nil?
     end
 
-    def git_op(working_dir)
+    def add(path)
+      @g&.add(path)
     end
 
-    def git_op_level2(g)
-      true
+    def commit(message)
+      @g&.commit(message)
     end
 
     def git_op_level2_0(g)

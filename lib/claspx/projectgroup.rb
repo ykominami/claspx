@@ -5,9 +5,11 @@ module Claspx
     def initialize(top_dir, remote_hash)
       @top_dir_pn = Pathname.new(top_dir)
 
-      # ファイルシステムに存在するするプロジェクト
+      # ファイルシステムに存在するプロジェクト（リモートと対応するローカルプロジェクト、リモートのみのプロジェクト、ローカルのみのプロジェクト)
       @all_projects = {}
+      # ローカルリポジトリプロジェクト
       @local_projects = {}
+      # リモートリポジトリプロジェクト
       @remote_projects = {}
 
       @claspcmd = ClaspCmd.new
@@ -19,48 +21,27 @@ module Claspx
     end
 
     def setup_all
-      all_counter = 0
-      error_counter = 0
-      error_array = []
-      @all_projects.each do |_, project|
-        ret = project.setup
-        all_counter += 1
-        if ret.error?
-          error_counter += 1
-          error_array.push( [ret.message, project] )
-        end
-      end
-
-      message = "ProjectGroup#setup_all|all_counter=#{all_counter}|error_counter=#{error_counter}"
-      status = true
-      status = false if error_counter > 0
-
-      ret = Result.new(status, message)
-      ret.add_array(error_array)
-    end
-
-    def clasp_pull_all()
-      @all_projects.each do |_, project|
-        @claspcmd.pull(project.path.to_s)
-      end
+      Util2.count_error_all("ProjectGroup#setup_all", @all_projects){ |_, project|
+        project.setup
+      }
     end
 
     def clasp_clone_all
-      @all_projects.each do |_, project|
-        @claspcmmd.clone(project.path.to_s)
-      end
+      Util2.count_error_all("ProjectGroup#clasp_clone_all", @all_projects){ |_, project|
+        @claspcmd.clone(project.path.to_s)
+      }
     end
 
     def clasp_pull_all
-      @all_projects.each do |_, project|
+      Util2.count_error_all("ProjectGroup#clasp_pull_all", @all_projects){ |_, project|
         @claspcmd.pull(project.path.to_s)
-      end
+      }
     end
 
     def clasp_push_all(project)
-      @all_projects.each do |_, project|
+      Util2.count_error_all("ProjectGroup#clasp_push_all", @all_projects){ |_, project|
         @claspcmd.push(project.path.to_s)
-      end
+      }
     end
 
     def setup_for_project_on_github
@@ -153,51 +134,39 @@ module Claspx
     end
     
     def transformed_js_list_all()
-      @all_projects.map{ |k,v|
-        # puts(k)
-        v.transformed_js_list()
+      Util2.count_error_all("ProjectGroup#transformed_js_list", @all_projects){ |_, project|
+        project.transformed_js_list()
       }
     end
 
     def copy_transformed_js_to_src_file_all()
-      @all_projects.map{ |k,v|
-        # puts(k)
-        v.copy_transformed_js_to_src_file_all()
+      Util2.count_error_all("ProjectGroup#copy_transformed_js_to_src_file_all", @all_projects){ |_, project|
+        project.copy_transformed_js_to_src_file_all()
       }
     end
 
     def transform_js_script_all()
-      @all_projects.each{ |k,v|
-        # puts(k)
-        v.transform_js_script()
+      Util2.count_error_all("ProjectGroup#transform_js_script_all", @all_projects){ |_, project|
+        project.transform_js_script()
       }
-      status = true
-      Result.new(status, "Project#transform_js_script_all")
     end
 
     def make_import_export_file_all()
-      all_counter = 0
-      error_counter = 0
-      return_array = []
-
-      @all_projects.each{ |k,v|
-        # puts(k)
-        result = v.make_import_export_file()
-        all_counter += 1
-        error_counter += 1 if result.error?
-        return_array << result
+      Util2.count_error_all("ProjectGroup#make_import_export_file_all", @all_projects){ |_, project|
+        project.make_import_export_file()
       }
-      status = true
-      status = false if error_counter > 0
-      result = Result.new(status, "Project#reform_js_script_all")
-      result.add_return_array(return_array)
     end
     
-    def file_list()
-      @all_projects.map do |_, project|
-        project.file_list()
-      end
+    def reform_to_camelcase_js_script_all()
+      Util2.count_error_all("ProjectGroup#reform_to_camelcase_js_script_all", @all_projects){ |_, project|
+        project.reform_to_camelcase_js_script()
+      }
     end
 
+    def file_list
+      Util2.count_error_all("ProjectGroup#file_list", @all_projects){ |_, project|
+        project.file_list()
+      }
+    end
   end
 end

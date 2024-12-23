@@ -1,9 +1,10 @@
-require 'rkelly'
+require "rkelly"
 
 module Claspx
   class Jsscript
     class JsscriptPair
       attr_reader :src_file, :dest_file
+
       def initialize(src_file, dest_file)
         @src_file = src_file
         @dest_file = dest_file
@@ -16,7 +17,8 @@ module Claspx
 
     class Filex
       attr_accessor :path, :content
-      def initialize(path, content=nil)
+
+      def initialize(path, content = nil)
         @path = path
         @content = content
       end
@@ -33,6 +35,7 @@ module Claspx
 
     class JsscriptPart
       attr_reader :part0, :part1, :part2
+
       def initialize(parts)
         @part0 = parts[0]
         @part1 = parts[1]
@@ -42,6 +45,7 @@ module Claspx
 
     attr_reader :src_file, :work_head_file, :work_content_file, :work_foot_file,
                 :work_import_file, :work_export_file
+
     def initialize(src_file)
       @buffer_initial = [[], [], []]
 
@@ -52,7 +56,7 @@ module Claspx
       @work_import_file = nil
       @work_export_file = nil
     end
- 
+
     def load_filex(src_file)
       Filex.new(src_file).load
     end
@@ -62,17 +66,17 @@ module Claspx
     end
 
     def make_filex_base(dir_pn, basename, ext_array)
-      ext_array.map{ |ext|
+      ext_array.map do |ext|
         Filex.new(dir_pn.join("#{basename}#{ext}"))
-      }
+      end
     end
-      
+
     def make_filex_for_3parts(dir_pn, basename)
-      make_filex_base(dir_pn, basename, %W(.head .content .foot))
+      make_filex_base(dir_pn, basename, %w[.head .content .foot])
     end
 
     def make_filex_for_esmodule(dir_pn, basename)
-      make_filex_base(dir_pn, basename, %W(.import .export))
+      make_filex_base(dir_pn, basename, %w[.import .export])
     end
 
     def analyze(javascript_code)
@@ -86,8 +90,6 @@ module Claspx
 
     def make_content_part(dir_pn, basename)
       content_filex_array = make_filex_for_3parts(dir_pn, basename)
-      # pp "content_filex_array==="
-      # pp content_filex_array
       JsscriptPart.new(content_filex_array)
     end
 
@@ -110,21 +112,20 @@ module Claspx
 
       content_parts.part0.content = buffers[0].join("\n")
       File.write(@work_head_file, content_parts.part0.content)
-      
-      content_parts.part1.content  = buffers[1].join("\n")
+
+      content_parts.part1.content = buffers[1].join("\n")
       File.write(@work_content_file, content_parts.part1.content)
 
-      content_parts.part2.content  = buffers[2].join("\n")
+      content_parts.part2.content = buffers[2].join("\n")
       File.write(@work_foot_file, content_parts.part2.content)
-
 
       # JsscriptPair(dest_content_file, @work_file)
       status = true
       result = Result.new(status, "Clapsx#reform_js_script")
-      result.add_return_value( content_parts )
-      result.add_return_array( content_parts )
+      result.add_return_value(content_parts)
+      result.add_return_array(content_parts)
     end
-  
+
     def convert(work_file, work_head_file, work_content_file, work_foot_file)
       ret = reform(work_file)
       return ret if ret.error?
@@ -136,7 +137,7 @@ module Claspx
 
       content_head = buffers[0].join("\n")
       File.write(dest_head_file, content_head)
-      
+
       content = buffers[1].join("\n")
       File.write(dest_content_file, content)
 
@@ -144,7 +145,6 @@ module Claspx
       File.write(dest_foot_file, content_foot)
 
       import_part, export_part = analyze(content)
-
 
       # JsscriptPair(dest_content_file, @work_file)
       status = true
@@ -155,9 +155,9 @@ module Claspx
       buffer_size = @buffer_initial.size
 
       # lines = File.readlines(src_file)
-      lines = File.read(src_file)
+      lines = File.readlines(src_file)
       buffer_index = 0
-      buffers = lines.each_with_object(@buffer_initial){ |line, buffer|
+      buffers = lines.each_with_object(@buffer_initial) do |line, buffer|
         if line =~ /^```javascript/
           buffer[buffer_index] << line
           buffer_index += 1 if buffer_index < buffer_size - 1
@@ -167,7 +167,7 @@ module Claspx
         else
           buffer[buffer_index] << line
         end
-      }
+      end
       status = true
       result = Result.new(status, "Clapsx#reform_js_script")
       result.add_return_value(buffers)
@@ -175,12 +175,14 @@ module Claspx
     end
 
     def transformed_js_and_src_file
-      JsscriptPair.new(@src_file, @dest_content_file )
-      # [@src_file , @dest_content_file]
+      jsscriptpair = JsscriptPair.new(@src_file, @dest_content_file)
+      result = Result.new(true, "Clapsx#transformed_js_and_src_file")
+      result.add_return_value(jsscriptpair)
     end
 
     def copy_transformed_js_to_dest
       FileUtils.cp(@dest_content_file, @work_file)
+      Result.new(true, "Clapsx#copy_transformed_js_to_dest")
     end
   end
-end    
+end
