@@ -1,8 +1,8 @@
-require 'json'
+require "json"
 
 module Claspx
   class GhCmd < Cmd
-    def initialize()
+    def initialize
       super("gh")
     end
 
@@ -11,36 +11,38 @@ module Claspx
       result = execute(cmdline)
       result.add_message_memo("list_repository|cmdline=#{cmdline}")
       return_value = result.std_out
-      return_array = return_value.split("\n").map{ |it| it.split("\t") }
+      return_array = return_value.split("\n").map { |it| it.split("\t") }
       result.add_return_array(return_array)
     end
 
-    def list_repository_name(limit: 300)
+    def list_repository_name(limit: GH_PROJECT_LIMIT)
       cmdline = "#{@name} repo list --limit #{limit} --json name"
       result = execute(cmdline)
       result.add_message_memo("list_repository_name|cmdline=#{cmdline}")
       return_value = result.std_out
-      return_array = JSON.parse(return_value).map{ |item| item["name"] }
+      return_array = JSON.parse(return_value).map { |item| item["name"] }
       result.add_return_array(return_array)
     end
 
     def find_remote_repository(repository_name)
-      result = list_repository_name()
-      return result if result.error?
+      result = list_repository_name
+      return Result.new(false, "ChCmd#find_remote_repository|list_repository_name error") if result.error?
 
       # result.return_array.map{ |item| item[0] }.grep(/#{repository_name}/).positive?
       array = result.return_array.grep(/#{repository_name}/)
       array = [] if array.nil?
       ret = array.size.positive?
-      result2 = Result.new(ret, "find_remote_repository|ret=#{ret}")
+      result2 = Result.new(ret, "GhCmd#find_remote_repository|ret=#{ret}")
       result2.add_array(array)
       result2.add_return_array(array)
     end
 
-    def create_public_repository(chdir, repository_name)
+    def get_or_create_public_repository(chdir, repository_name)
       result = find_remote_repository(repository_name)
-
-      return result if result.success?
+      if result.success?
+        return Result.new(true,
+                          "GhCmd#get_or_create_public_repository|repository_name=#{repository_name} already exists")
+      end
 
       cmdline = "#{@name} repo create --public -s #{chdir} #{repository_name}"
       execute(cmdline)
@@ -54,11 +56,11 @@ module Claspx
       cmd_line = "#{@name} repo delete #{repository_name}"
 
       result = "NIL"
-      result2 = spawn(cmd_line) do | read, write |
+      result2 = spawn(cmd_line) do |read, write|
         @read = read
         @write = write
-      
-        @read.expect(/Type(\s+)([^\s]+)(\s+)([^:]+):/, @timeout) do | match |
+
+        @read.expect(/Type(\s+)([^\s]+)(\s+)([^:]+):/, @timeout) do |match|
           confirm_statement = match[2]
           @write.write("#{confirm_statement}\n")
         end

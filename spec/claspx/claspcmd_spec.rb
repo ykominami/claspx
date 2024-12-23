@@ -17,7 +17,6 @@ RSpec.describe Claspx::ClaspCmd do
     project = @app.project_group.get_local_project(@local_project_name)
     cmd = Claspx::ClaspCmd.new
     result = cmd.pull(project.path)
-    p result
     expect(result.status).to eq(true)
   end
 end

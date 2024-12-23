@@ -16,8 +16,6 @@ comment = "#" if ARGV[0] == "c"
 
 path="test_data/clasp/bin"
 
-# pp @project_hash
-
 cmdline = @project_hash.map do |key, project|
   [
   "#{comment} echo '' ",
@@ -28,5 +26,4 @@ cmdline = @project_hash.map do |key, project|
   ].join("\n")
 end
 
-# pp cmdline
 File.write("bin/claspx", cmdline.join("\n"))

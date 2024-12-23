@@ -55,9 +55,6 @@ module Claspx
       result = execute(cmdline)
       result.add_message_memo("list_repository|cmdline=#{cmdline}")
       return_value = result.std_out
-      puts return_value
-      # return_value = JSON.dump([{"name": "__test_project"}, {"name": "asdf"}])
-      # puts return_value
       return_array = JSON.parse(return_value).map{ |item| item["name"] }
       result.add_return_array(return_array)
     end
@@ -95,7 +92,6 @@ module Claspx
       
         @read.expect(/Type(\s+)([^\s]+)(\s+)([^:]+):/, @timeout) do | match |
           confirm_statement = match[2]
-          puts "confirm_statement=#{confirm_statement}"
           @write.write("#{confirm_statement}\n")
         end
 

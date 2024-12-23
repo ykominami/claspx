@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require "debug"
-require 'loggerx'
-require 'pathname'
-require 'open3'
+require "loggerx"
+require "pathname"
+require "open3"
+require "gemini-ai"
 
 module Claspx
+  GIT_EXT = ".git"
   LOG_DIR = "log"
   SRC_DIR = "src"
   DIST_DIR = "dist"
@@ -18,7 +20,8 @@ module Claspx
   APPSSCRIPT_JSON = "appsscript.json"
   ETC_DIR = "etc"
   CLASPX_DIR = "test_data/clasp"
-  TOP_DIR_PN = Pathname.new(__FILE__).join("../..")  
+  GH_PROJECT_LIMIT = 300
+  TOP_DIR_PN = Pathname.new(__FILE__).join("../..")
   LOG_DIR_PN = TOP_DIR_PN.join(LOG_DIR)
   MAX_PROJECTS = 300
 end
@@ -27,7 +30,7 @@ module Claspx
   class Loggerxcm < Loggerx::Loggerxcm
     # Loggerxcm.init("claspxC_", :default, LOG_DIR_PN, false, level: :debug)
     # Loggerxcm.init("claspxC_", :default, LOG_DIR_PN, false, level: :info)
-    # Loggerxcm.init("claspxC_", :default, LOG_DIR_PN, true, level: :info) 
+    # Loggerxcm.init("claspxC_", :default, LOG_DIR_PN, true, level: :info)
     Loggerxcm.init("claspxC_", :default, LOG_DIR_PN, true, level: :debug)
   end
 
@@ -35,8 +38,8 @@ module Claspx
     # @loggerx = Loggerx.new("claspxI_", :default, LOG_DIR_PN, false, level: :debug)
     @loggerx = Loggerx.new("claspxI_", :default, LOG_DIR_PN, false, level: :info)
 
-    def self.loggerx
-      @loggerx
+    class << self
+      attr_reader :loggerx
     end
   end
 
@@ -61,7 +64,6 @@ require_relative "claspx/jsscript"
 require_relative "claspx/project"
 require_relative "claspx/projectgroup"
 require_relative "claspx/app"
-
 
 require_relative "claspx/version"
 require_relative "claspx/util2"
