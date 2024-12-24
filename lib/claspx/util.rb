@@ -31,6 +31,11 @@ module Claspx
           hash[it["name"]] = { idx: it["idx"], url: it["url"], github_url_ssh: it["github_url_ssh"], github_url_https: it["github_url_https"] }
         end
       end
+
+      def is_nil_or_whitespace(str)
+        str = "" if str.nil?
+        str.match(/^\s*$/)
+      end    
     end
   end
 end

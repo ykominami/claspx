@@ -1,3 +1,5 @@
+require 'dotenv/load'
+
 module Claspx
   class Env
   
@@ -8,6 +10,8 @@ module Claspx
     TEMPLATE_PACKAGE_JSON_PN = CLASPX_ETC_DIR_PN.join(PACKAGE_JSON)
     TEMPLATE_APPSSCRIPT_JSON_PN = CLASPX_ETC_DIST_DIR_PN.join(APPSSCRIPT_JSON)
     TEMPLATE_GITIGNORE_PN = CLASPX_ETC_DIR_PN.join(GITI)
+    GOOGLE_API_KEY = ENV['GOOGLE_API_KEY']
+    Loggerxcm.info "GOOGLE_API_KEY: #{GOOGLE_API_KEY}"
 
     class << self
       def TEMPLATE_CLASP_JSON_PN

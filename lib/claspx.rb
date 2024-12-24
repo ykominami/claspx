@@ -4,7 +4,7 @@ require "debug"
 require "loggerx"
 require "pathname"
 require "open3"
-require "gemini-ai"
+# require "gemini-ai"
 
 module Claspx
   GIT_EXT = ".git"
@@ -46,6 +46,9 @@ module Claspx
   class Error < StandardError; end
   # Your code goes here...
 end
+
+# require "rkelly"
+
 
 require_relative "claspx/util"
 require_relative "claspx/cmd"

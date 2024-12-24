@@ -1,5 +1,3 @@
-require "rkelly"
-
 module Claspx
   class Jsscript
     class JsscriptPair
