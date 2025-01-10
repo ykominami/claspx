@@ -1,0 +1,2 @@
+#!/bin/bash
+curl -v -L -H "Content-Type: application/json" -d 'code=123' https://a.northern-cross.net/claspx/login

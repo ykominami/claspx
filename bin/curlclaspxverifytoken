@@ -1,0 +1,12 @@
+#!/bin/bash
+# curl -v -L -X POST -H "Content-Type: application/json" -d 'code=123 user=ykominami password=pwd32358E' https://a.northern-cross.net/claspx/login
+# curl -v -L -d '{"code":"123","user":"ykominami6", "password":"pwd32358E"}' https://a.northern-cross.net/claspx/signup
+cookie_file="cookies.txt"
+if [ ! -f $cookie_file ]; then
+  touch $cookie_file
+fi
+# ruby -ljson -rcurl -e 'puts Curl.post("https://a.northern-cross.net/claspx/verify-token", {token: "123"}).body_str'
+str=$(ruby -rjson -e "puts JSON.dump( {ghi: 789} ) + '.' + JSON.dump( {abc: 123} ) + '.' + JSON.dump( {def: 456} )")
+# echo $str
+# curl -v -L -d "token=$str" https://a.northern-cross.net/claspx/verify-token
+curl -b $cookie_file -c $cookie_file -v -H "Content-Type: application/json"  -L -d "$str" https://a.northern-cross.net/claspx/verify-token

@@ -1,0 +1,4 @@
+#!/bin/bash
+# bin/curlclaspxindex3
+bin/curlclaspxindex
+# bin/claspxpush && bin/curlclaspxindex3

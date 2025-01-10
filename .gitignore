@@ -21,4 +21,5 @@ test_data/
 /log
 bin/gitx
 bin/gitx2
+cookies*.*
 

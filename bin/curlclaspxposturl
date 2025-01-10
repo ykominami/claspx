@@ -1,0 +1,7 @@
+#!/bin/bash
+# curl -v -L -X POST -H "Content-Type: application/json" -d 'code=123 user=ykominami password=pwd32358E' https://a.northern-cross.net/claspx/login
+cookie_file="cookies.txt"
+if [ ! -f $cookie_file ]; then
+  touch $cookie_file
+fi
+curl -b $cookie_file -c $cookie_file -v -L -d 'code=123_LOGIN&user=ykominami&password=pwd32358E' https://a.northern-cross.net/claspx/posturl

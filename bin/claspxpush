@@ -1,0 +1,3 @@
+#!/bin/bash
+ scp -r _tmp/claspx kvm-root:/var/www/vhosts/a.northern-cross.net/httpdocs
+ 

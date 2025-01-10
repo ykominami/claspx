@@ -26,6 +26,6 @@ gem "pstore", "~> 0.1"
 
 # gem 'rkelly-remix', '~> 0.0.7'
 
-# gem 'gemini-ai', '~> 4.2.0'
+gem 'gemini-ai', '~> 4.2.0'
 
 gem 'dotenv'
