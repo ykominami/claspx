@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <title>Google Sign-In</title>
+    <meta name="google-signin-client_id" content="734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com">
+
+    <meta http-equiv="Content-Security-Policy" content="
+      script-src-elem 'self' https://accounts.google.com 'unsafe-inline';
+      img-src *;
+    ">
+    <meta name="google-signin-client_id" content="734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com">
+
+
+    <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
+  </head>
+  <body>
+    <script>
+      let client = null;
+      function initClient() {
+        console.log(`initClient`)
+        const CLIENT_ID ='734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com';
+        const SCOPE = 'https://www.googleapis.com/auth/calendar.readonly'
+        const POPUP_MODE = 'popup'
+        const REDIRECT_URI = 'https://a.northern-cross.net/allapi5/login.php'
+
+        client = google.accounts.oauth2.initCodeClient({
+          client_id: CLIENT_ID,
+          scope: SCOPE,
+          ux_mode: POPUP_MODE,
+          callback: (response) => {
+            const code_receiver_uri = REDIRECT_URI;
+            // Send auth code to your backend platform
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', code_receiver_uri, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function() {
+              console.log('Signed in as: ' + xhr.responseText);
+            };
+            xhr.send('code=' + response.code);
+            // After receipt, the code is exchanged for an access token and
+            // refresh token, and the platform then updates this web app
+            // running in user's browser with the requested calendar info.
+          },
+          native_callback: (credential) => {
+            // Send ID token to your backend platform
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/claspx/login', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function() {
+              console.log('Signed in as: ' + xhr.responseText);
+            };
+            xhr.send('id_token=' + credential.id_token);
+            // After receipt, the ID token is verified and the platform then
+            // updates this web app running in user's browser with the requested
+            // calendar info.
+          },
+        });
+      }
+      function getAuthCode() {
+        // Request authorization code and obtain user consent
+        client.requestCode();
+      }
+      function getIdToken(credential) {
+        // Request an ID token and obtain user consent
+        client.request(credential.id, credential.password;
+      }
+    </script>
+    <button onclick="getAuthCode();">Load Your Calendar</button>
+    <button onclick="g()">クリックしてください</button>
+    <div
+      id="g_id_onload"
+      data-client_id="734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com"
+      data-auto_prompt=true
+      data-context="signin"
+      data-ux_mode="popup"
+      data-login_uri="https://a.northern-cross.net/claspx/login"
+      data-callback=getIdToken
+      data-native_callback=getIdToken
+      data-native_login_uri="https://a.northern-cross.net/claspx/login"
+      data-nonce=""
+      data-auto_select="true"
+      data-itp_support="true"
+    ></div>
+
+    <div
+      class="g_id_signin"
+      data-type="standard"
+      data-shape="rectangular"
+      data-theme="outline"
+      data-text="signin_with"
+      data-size="large"
+      data-logo_alignment="left"
+      data-state="singin"
+    ></div>
+
+    <div
+      class="g_id_signin"
+      data-type="icon"
+      data-shape="rectangular"
+      data-theme="outline"
+      data-text="signin_with"
+      data-size="large"
+      data-logo_alignment="left"
+      data-state="singin_icond"
+    ></div>
+  </body>
+</html>
+

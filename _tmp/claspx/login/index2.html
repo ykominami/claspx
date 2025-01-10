@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Sign-In Demo</title>
+  <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+</head>
+<body>
+  <div id="g_id_onload"
+       data-client_id="787161889744-sfbcnp7k1c9vdc8r860nqv3uafq8r5nc.apps.googleusercontent.com"
+       data-login_uri="https://a.northern-cross.net/"
+       data-auto_prompt="false">
+  </div>
+  <div class="g_id_signin"
+       data-type="standard"
+       data-size="large"
+       data-theme="outline"
+       data-text="sign_in_with"
+       data-shape="rectangular"
+       data-logo_alignment="left">
+  </div>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    // Handle the received ID token
+    function handleCredentialResponse(response) {
+      // decodeJwtResponse() is a custom function defined by you
+      // to decode the credential response.
+      const responsePayload = decodeJwtResponse(response.credential);
+
+      console.log("ID: " + responsePayload.sub);
+      console.log('Full Name: ' + responsePayload.name);
+      console.log('Given Name: ' + responsePayload.given_name);
+      console.log('Family Name: ' + responsePayload.family_name);
+      console.log("Image URL: " + responsePayload.picture);
+      console.log("Email: " + responsePayload.email);
+    }
+
+    // Send token to server
+    function sendTokenToServer(token) {
+        fetch('/claspx/verify-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: token })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Server response:', data);
+            // Handle server response (e.g., redirect, show success message)
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+        callback: handleCredentialResponse
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("buttonDiv"),
+        { theme: "outline", size: "large" }  // customization attributes
+      );
+      google.accounts.id.prompt(); // also display the One Tap dialog
+    }
+  </script>
+  <div id="buttonDiv"></div>
+</body>
+</html>
+

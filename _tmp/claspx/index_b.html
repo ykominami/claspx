@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <title>Google Sign-In</title>
+    <meta name="google-signin-client_id" content="787161889744-sfbcnp7k1c9vdc8r860nqv3uafq8r5nc.apps.googleusercontent.com">
+
+    <meta http-equiv="Content-Security-Policy" content="
+      script-src-elem 'self' https://accounts.google.com 'unsafe-inline';
+      img-src *;
+    ">
+
+    <script src="https://accounts.google.com/gsi/client"  async defer></script>
+  </head>
+  <body>
+    <script>
+      const CLIENT_ID ='787161889744-sfbcnp7k1c9vdc8r860nqv3uafq8r5nc.apps.googleusercontent.com';
+      window.onload = function () {
+        google.accounts.id.initialize({
+          client_id: CLIENT_ID,
+          callback: handleCredentialResponse,
+          uxmode: 'popup'
+        });
+        google.accounts.id.prompt();
+      };
+      function handleCredentialResponse(response) {
+        const responsePayload = decodeJwtResponse(response.credential);
+
+        console.log(response.clientId);
+        console.log("ID: " + responsePayload.sub);
+        console.log('Full Name: ' + responsePayload.name);
+        console.log('Given Name: ' + responsePayload.given_name);
+        console.log('Family Name: ' + responsePayload.family_name);
+        console.log("Image URL: " + responsePayload.picture);
+        console.log("Email: " + responsePayload.email);
+
+        if (response.clientId === CLIENT_ID) {
+          if (response.credential) {
+            console.log(response.credential);
+          } else {
+            console.log('No credential');
+          }
+        }
+      }
+    </script>
+    <div id="g_id_onload"
+    data-client_id="787161889744-sfbcnp7k1c9vdc8r860nqv3uafq8r5nc.apps.googleusercontent.com"
+    data-context="signin"
+    data-ux_mode="popup"
+    data-login_uri="https://a.northern-cross.net/claspx/redirect"
+    data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin"
+    data-type="standard"
+    data-shape="rectangular"
+    data-theme="outline"
+    data-text="signin_with"
+    data-size="large"
+    data-logo_alignment="left">
+    </div>
+  </body>
+</html>
+

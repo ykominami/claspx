@@ -1,0 +1,70 @@
+<html>
+libc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com
+  <head>
+    <title>Google Sign-In</title>
+    <meta name="google-signin-client_id" content="734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com">
+    <meta http-equiv="Content-Security-Policy" content="script-src-elem 'self' https://apis.google.com https://www.gstatic.com https://accounts.google.com 'unsafe-inline'; connect-src https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; script-src https://accounts.google.com/gsi/client;  ">
+
+    <meta http-equiv="Content-Security-Policy" content="script-src-elem 'self' https://apis.google.com https://www.gstatic.com https://accounts.google.com 'unsafe-inline' nonce-zyx; ">
+
+    <script src="https://accounts.google.com/gsi/client  onload="initClient()" async defer></script>
+  </head>
+  <body>
+    <script>
+      var client;
+      function initClient() {
+        client = google.accounts.oauth2.initCodeClient({
+          client_id: '734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/calendar.readonly',
+          ux_mode: 'popup',
+          callback: (response) => {
+            var code_receiver_uri = 'https://a.northern-cross.net/allapi5/login.php',
+            // Send auth code to your backend platform
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', code_receiver_uri, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function() {
+              console.log('Signed in as: ' + xhr.responseText);
+            };
+            xhr.send('code=' + response.code);
+            // After receipt, the code is exchanged for an access token and
+            // refresh token, and the platform then updates this web app
+            // running in user's browser with the requested calendar info.
+          },
+        });
+      }
+      function getAuthCode() {
+        // Request authorization code and obtain user consent
+        client.requestCode();
+      }
+    </script>
+    <button onclick="getAuthCode();">Load Your Calendar</button>
+
+<!--   google.accounts.id.revoke('user@google.com', done => {
+    console.log('consent revoked');
+  });
+-->
+    <div
+      id="g_id_onload"
+      data-client_id="734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      data-login_uri="https://a.northern-cross.net/allapi5"
+      data-nonce=""
+      data-auto_select="true"
+      data-itp_support="true"
+    ></div>
+
+    <div
+      class="g_id_signin"
+      data-type="standard"
+      data-shape="rectangular"
+      data-theme="outline"
+      data-text="signin_with"
+      data-size="large"
+      data-logo_alignment="left"
+    ></div>
+  </body>
+</html>
+

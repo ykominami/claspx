@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <title>Google Sign-In</title>
+    <meta name="google-signin-client_id" content="734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com">
+
+    <meta http-equiv="Content-Security-Policy" content="
+      script-src-elem 'self' https://accounts.google.com 'unsafe-inline';
+      img-src *;
+    ">
+    <meta name="google-signin-client_id" content="734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com">
+
+
+    <script src="https://accounts.google.com/gsi/client"  async defer></script>
+  </head>
+  <body>
+    <script>
+      window.onload = function () {
+        const CLIENT_ID ='734731105713-olibc753pvl3ahngs5u7bhmmuo7megcr.apps.googleusercontent.com';
+        google.accounts.id.initialize({
+          client_id: CLIENT_ID,
+          callback: handleCredentialResponse
+        });
+        google.accounts.id.prompt();
+      };
+      function handleCredentialResponse(response) {
+        if (response.clientId === CLIENT_ID) {
+          if (response.credential) {
+            console.log(response.credential);
+          } else {
+            console.log('No credential');
+          }
+        }
+      }
+    </script>
+    <div class="g_id_signin"
+        data-type="standard"
+        data-shape="rectangular"
+        data-theme="outline"
+        data-text="signin_with"
+        data-size="large"
+        data-logo_alignment="left">
+    </div>
+  </body>
+</html>
+
