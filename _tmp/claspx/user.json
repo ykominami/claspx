@@ -1,0 +1,10 @@
+[
+    {
+        "id": 1,
+        "name": "ykominami",
+        "password": "$2y$10$CMNPzJC19S52.ijqnuxgHulrJTHdHJnLPulm7.iG7hnEGlEGffv.C",
+        "code": null,
+        "token": null,
+        "recovery_token": null
+    }
+]

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Sign-In Demo</title>
+  <meta name="google-signin-client_id" content="787161889744-sfbcnp7k1c9vdc8r860nqv3uafq8r5nc.apps.googleusercontent.com">
+</head>
+<body>
+  <script>
+    // Handle the received ID token
+    function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+        sendTokenToServer(response.credential);
+    }
+
+    // Send token to server
+    function sendTokenToServer(token) {
+      const data = { token: token };
+      str = new URLSearchParams(data).toString();
+      console.log('str:', str);
+
+      fetch('/claspx/verify-token', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: str
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Server response:', data);
+          // サーバーのレスポンスを処理する（例: リダイレクト、成功メッセージの表示）
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+    }
+
+    window.onload = function () {
+      // $token = { 'token': {'ABC': '456'} };
+      $token = {'ABC': '456'};
+      console.log('token:', $token);
+      sendTokenToServer(token)
+    }
+  </script>
+</body>
+</html>
+

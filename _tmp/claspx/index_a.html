@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>Google Sign-In</title>
+    <meta name="google-signin-client_id" content="787161889744-sfbcnp7k1c9vdc8r860nqv3uafq8r5nc.apps.googleusercontent.com">
+
+    <meta http-equiv="Content-Security-Policy" content="
+      script-src-elem 'self' https://accounts.google.com 'unsafe-inline';
+      img-src *;
+    ">
+
+    <script src="https://accounts.google.com/gsi/client"  async defer></script>
+  </head>
+  <body>
+    <script>
+      const CLIENT_ID ='787161889744-sfbcnp7k1c9vdc8r860nqv3uafq8r5nc.apps.googleusercontent.com';
+      window.onload = function () {
+        google.accounts.id.initialize({
+          client_id: CLIENT_ID,
+          callback: handleCredentialResponse,
+          use_fedcm_for_prompt: true
+        });
+        google.accounts.id.prompt();
+      };
+      function handleCredentialResponse(response) {
+        console.log(response.clientId);
+        if (response.clientId === CLIENT_ID) {
+          if (response.credential) {
+            console.log(response.credential);
+          } else {
+            console.log('No credential');
+          }
+        }
+      }
+    </script>
+
+  </body>
+</html>
+
