@@ -1,0 +1,2 @@
+#!/bin/bash
+ scp  kvm-root:/var/www/vhosts/a.northern-cross.net/httpdocs/allapi5/* _tmp/allapi5/

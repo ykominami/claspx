@@ -1,0 +1,2 @@
+#!/bin/bash
+curl -L -X POST -H "Content-Type: application/json" -d 'code=123' https://a.northern-cross.net/allapi5/index.php

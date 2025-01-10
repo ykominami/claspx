@@ -1,0 +1,4 @@
+#!/bin/bash
+# bin/curlclaspxindex2
+# bin/claspxpush && bin/curlclaspxlogin
+bin/claspxpush && bin/curlclaspxverifytoken
